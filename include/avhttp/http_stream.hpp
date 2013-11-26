@@ -592,7 +592,8 @@ protected:
 	void handle_status(Handler handler, const boost::system::error_code& err);
 
 	template <typename Handler>
-	void handle_header(Handler handler, int bytes_transferred, const boost::system::error_code& err);
+	void handle_header(Handler handler, std::string header_string,
+		int bytes_transferred, const boost::system::error_code& err);
 
 	template <typename MutableBufferSequence, typename Handler>
 	void handle_read(const MutableBufferSequence& buffers,
@@ -780,7 +781,9 @@ private:
 	// 数据内容长度.
 	boost::int64_t m_content_length;
 
-	// body大小.
+	// body大小, 它主要用于在启用了keep_alive的情况下, 提前把
+	// 所接收到的content长度计算出来, 以避免接收到下一个requst
+	// 所返回的http header.
 	std::size_t m_body_size;
 
 	// 重定向的地址.
